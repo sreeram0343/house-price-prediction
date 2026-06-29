@@ -1,190 +1,85 @@
 <div align="center">
 
-# House Price Prediction
+<img src="https://readme-typing-svg.demolab.com?font=Inter&weight=600&size=32&duration=3000&pause=1000&center=true&vCenter=true&width=700&lines=House+Price+Prediction;Machine+Learning+Project;Built+with+Python+and+Scikit-Learn" />
 
-*A Machine Learning project for predicting residential property prices using Linear Regression.*
+<br>
 
-![Python](https://img.shields.io/badge/Python-3.x-blue?style=for-the-badge)
-![Pandas](https://img.shields.io/badge/Pandas-Data%20Analysis-black?style=for-the-badge)
-![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-Machine%20Learning-orange?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-In%20Development-success?style=for-the-badge)
+<img src="https://img.shields.io/github/languages/top/YOUR_USERNAME/House-Price-Prediction?style=for-the-badge" />
+<img src="https://img.shields.io/github/repo-size/YOUR_USERNAME/House-Price-Prediction?style=for-the-badge" />
+<img src="https://img.shields.io/github/last-commit/YOUR_USERNAME/House-Price-Prediction?style=for-the-badge" />
+<img src="https://img.shields.io/github/license/YOUR_USERNAME/House-Price-Prediction?style=for-the-badge" />
 
 </div>
 
 ---
 
-## Overview
+# House Price Prediction
 
-House Price Prediction is a Machine Learning project that estimates residential property prices based on property characteristics such as area, number of bedrooms, and number of bathrooms.
-
-The project demonstrates the complete Machine Learning workflow, including data loading, preprocessing, model training, evaluation, and prediction using Linear Regression.
-
-This repository also serves as the foundation of my AI & Machine Learning learning journey and will continuously evolve into a production-grade AI application.
-
----
-
-## Features
-
-- Load housing dataset using Pandas
-- Feature selection
-- Train-test split
-- Linear Regression model
-- Model evaluation
-- House price prediction
-- Clean and beginner-friendly implementation
+A Machine Learning project that predicts residential property prices using Linear Regression. This repository is the starting point of a long-term AI Engineering project that will gradually evolve into a production-ready real estate intelligence platform.
 
 ---
 
 ## Tech Stack
 
-| Category | Technology |
-|----------|------------|
-| Language | Python |
-| Data Processing | Pandas |
-| Machine Learning | Scikit-Learn |
-| Numerical Computing | NumPy |
+<p align="center">
+
+<img src="https://skillicons.dev/icons?i=python,vscode,git,github"/>
+
+</p>
 
 ---
 
-## Project Structure
+## Architecture
 
 ```text
-House-Price-Prediction/
-│
-├── data/
-│   └── House Price Prediction Dataset.csv
-│
-├── notebooks/
-│
-├── main.py
-├── requirements.txt
-└── README.md
+                 House Price Dataset
+                         │
+                         ▼
+                 Data Preprocessing
+                         │
+                         ▼
+                 Feature Selection
+                         │
+                         ▼
+                  Train-Test Split
+                         │
+                         ▼
+                Linear Regression
+                         │
+                         ▼
+                  Model Evaluation
+                         │
+                         ▼
+                  Price Prediction
 ```
 
 ---
 
-## Dataset Features
+## Current Features
 
-| Feature | Description |
-|----------|-------------|
-| Area | Total house area |
-| Bedrooms | Number of bedrooms |
-| Bathrooms | Number of bathrooms |
-| Floors | Number of floors |
-| YearBuilt | Construction year |
-| Location | Property location |
-| Condition | Overall condition |
-| Garage | Garage availability |
-| Price | Target variable |
-
----
-
-## Machine Learning Workflow
-
-```text
-Dataset
-    │
-    ▼
-Load Data
-    │
-    ▼
-Feature Selection
-    │
-    ▼
-Train-Test Split
-    │
-    ▼
-Linear Regression
-    │
-    ▼
-Evaluation
-    │
-    ▼
-Prediction
-```
-
----
-
-## Evaluation Metrics
-
-The model performance is measured using:
-
-- Mean Absolute Error (MAE)
-- R² Score
-
----
-
-## Installation
-
-Clone the repository
-
-```bash
-git clone https://github.com/<your-username>/House-Price-Prediction.git
-```
-
-Navigate to the project
-
-```bash
-cd House-Price-Prediction
-```
-
-Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-Run the project
-
-```bash
-python main.py
-```
-
----
-
-## Roadmap
-
-- [x] Project Initialization
-- [x] Linear Regression Model
-- [x] Model Evaluation
-- [ ] Exploratory Data Analysis
-- [ ] Data Preprocessing
-- [ ] Feature Engineering
-- [ ] Model Comparison
-- [ ] Hyperparameter Tuning
-- [ ] Explainable AI
-- [ ] FastAPI Integration
-- [ ] Interactive Dashboard
-- [ ] Geospatial Intelligence
-- [ ] Computer Vision Integration
-- [ ] LLM Integration
-- [ ] Retrieval-Augmented Generation (RAG)
-- [ ] AI Agents
-- [ ] MLOps Deployment
-
----
-
-## Learning Goals
-
-This project is being developed incrementally to understand:
-
-- Data Analysis
-- Feature Engineering
-- Regression Algorithms
+- CSV Dataset Loading
+- Data Processing with Pandas
+- Linear Regression Model
+- Train-Test Split
 - Model Evaluation
-- Production-Level Machine Learning
-- Modern AI Engineering Practices
+- House Price Prediction
 
 ---
 
-## License
+## Future Roadmap
 
-This project is licensed under the MIT License.
+- Exploratory Data Analysis
+- Feature Engineering
+- Advanced Regression Models
+- Explainable AI
+- FastAPI
+- Interactive Dashboard
+- Geospatial Intelligence
+- Computer Vision
+- Multimodal Learning
+- LLM Integration
+- RAG
+- AI Agents
+- MLOps
 
 ---
-
-<div align="center">
-
-**Built as part of my AI & Machine Learning learning journey.**
-
-</div>
