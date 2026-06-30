@@ -4,13 +4,13 @@
 
 <br>
 
-[![Top Language](https://img.shields.io/github/languages/top/YOUR_USERNAME/House-Price-Prediction?style=for-the-badge&color=blue)](#)
-[![Repo Size](https://img.shields.io/github/repo-size/YOUR_USERNAME/House-Price-Prediction?style=for-the-badge&color=informational)](#)
-[![Last Commit](https://img.shields.io/github/last-commit/YOUR_USERNAME/House-Price-Prediction?style=for-the-badge&color=success)](#)
-[![License](https://img.shields.io/github/license/YOUR_USERNAME/House-Price-Prediction?style=for-the-badge&color=yellow)](#)
-[![Stars](https://img.shields.io/github/stars/YOUR_USERNAME/House-Price-Prediction?style=for-the-badge&color=orange)](#)
-[![Forks](https://img.shields.io/github/forks/YOUR_USERNAME/House-Price-Prediction?style=for-the-badge&color=blueviolet)](#)
-[![Issues](https://img.shields.io/github/issues/YOUR_USERNAME/House-Price-Prediction?style=for-the-badge&color=red)](#)
+[![Top Language](https://img.shields.io/github/languages/top/sreeram0343/House-Price-Prediction?style=for-the-badge&color=blue)](#)
+[![Repo Size](https://img.shields.io/github/repo-size/sreeram0343/House-Price-Prediction?style=for-the-badge&color=informational)](#)
+[![Last Commit](https://img.shields.io/github/last-commit/sreeram0343/House-Price-Prediction?style=for-the-badge&color=success)](#)
+[![License](https://img.shields.io/github/license/sreeram0343/House-Price-Prediction?style=for-the-badge&color=yellow)](#)
+[![Stars](https://img.shields.io/github/stars/sreeram0343/House-Price-Prediction?style=for-the-badge&color=orange)](#)
+[![Forks](https://img.shields.io/github/forks/sreeram0343/House-Price-Prediction?style=for-the-badge&color=blueviolet)](#)
+[![Issues](https://img.shields.io/github/issues/sreeram0343/House-Price-Prediction?style=for-the-badge&color=red)](#)
 
 [![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](#)
 [![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-Linear%20Regression-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)](#)
@@ -80,9 +80,9 @@ It's intentionally scoped — a clean, well-tested baseline rather than a kitche
 |---|---|
 | **Language** | Python 3.9+ |
 | **Data Handling** | Pandas, NumPy |
-| **Modeling** | Scikit-Learn (Linear Regression) |
-| **Visualization** | Matplotlib / Seaborn *(planned — see Roadmap)* |
-| **Environment** | VS Code / Jupyter Notebook |
+| **Modeling** | Scikit-Learn, XGBoost |
+| **Visualization** | Matplotlib, Seaborn |
+| **Environment** | VS Code / Jupyter Notebook / Streamlit Dashboard |
 | **Version Control** | Git & GitHub |
 
 ---
@@ -134,17 +134,25 @@ It's intentionally scoped — a clean, well-tested baseline rather than a kitche
 ```text
 House-Price-Prediction/
 ├── data/
-│   └── housing.csv            # Raw dataset
+│   └── House Price India.csv  # Raw dataset
 ├── notebooks/
-│   └── exploration.ipynb      # EDA & experimentation
+│   └── Notebook.ipynb         # Original EDA & experimentation
 ├── src/
-│   ├── preprocessing.py       # Cleaning & feature prep
-│   ├── train.py               # Model training
-│   └── evaluate.py            # Metrics & evaluation
+│   ├── preprocessing.py       # Feature engineering & scaling pipeline
+│   ├── train.py               # Model training & tuning (GridSearchCV)
+│   └── evaluate.py            # Metrics calculation & plot generation
 ├── models/
-│   └── linear_regression.pkl  # Saved model artifact
-├── requirements.txt
-├── main.py
+│   ├── best_model.pkl         # Saved best model (XGBoost)
+│   ├── scaler.pkl             # Fitted StandardScaler
+│   ├── features.json          # list of input feature names
+│   └── metrics.json           # test set performance metrics
+├── plots/
+│   ├── actual_vs_predicted.png
+│   ├── feature_importance.png
+│   └── residuals_distribution.png
+├── app.py                     # Streamlit interactive dashboard
+├── requirements.txt           # Package dependencies
+├── main.py                    # Unified pipeline entry point
 └── README.md
 ```
 
@@ -160,8 +168,8 @@ House-Price-Prediction/
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/House-Price-Prediction.git
-cd House-Price-Prediction
+git clone https://github.com/sreeram0343/house-price-prediction.git
+cd house-price-prediction
 
 # Install dependencies
 pip install -r requirements.txt
@@ -178,15 +186,27 @@ python main.py
 
 ---
 
-## 📊 Model Performance
+The pipeline automatically trains multiple algorithms (Linear Regression, Ridge, Lasso, Decision Tree, Random Forest, XGBoost) and optimizes hyperparameters. The final selected champion model is **XGBoost**.
 
-> *Fill this in with your real evaluation output — concrete numbers turn a README into a results page.*
+### Champion Model (XGBoost) Metrics (Test Set)
 
 | Metric | Score |
 |---|---|
-| R² Score | `TBD` |
-| Mean Absolute Error (MAE) | `TBD` |
-| Root Mean Squared Error (RMSE) | `TBD` |
+| R² Score | `91.01%` (0.9101) |
+| Mean Absolute Error (MAE) | `₹64,208.01` |
+| Root Mean Squared Error (RMSE) | `₹115,378.61` |
+| Mean Absolute Percentage Error (MAPE) | `11.70%` |
+
+### Model Cross-Validation Comparison
+
+| Model | CV R² Score | Hyperparameters Optimized |
+|---|---|---|
+| **XGBoost** | **0.9043** | `learning_rate: 0.1, max_depth: 7, n_estimators: 100` |
+| **Random Forest** | **0.8891** | `max_depth: 15, min_samples_split: 2, n_estimators: 100` |
+| **Decision Tree** | **0.8197** | `max_depth: 10, min_samples_split: 10` |
+| **Linear Regression** | **0.7878** | *(none)* |
+| **Ridge** | **0.7878** | `alpha: 0.1` |
+| **Lasso** | **0.7868** | `alpha: 0.001` |
 
 ---
 
@@ -195,14 +215,15 @@ python main.py
 This repo is **Phase 0** of a multi-phase AI Engineering build. Each phase compounds on the last.
 
 ### Phase 1 — Deepen the Data Science
-- [ ] Exploratory Data Analysis (EDA)
-- [ ] Advanced Feature Engineering
-- [ ] Advanced Regression Models (Ridge, Lasso, Random Forest, XGBoost)
+- [x] Exploratory Data Analysis (EDA)
+- [x] Advanced Feature Engineering
+- [x] Advanced Regression Models (Ridge, Lasso, Random Forest, XGBoost)
 
 ### Phase 2 — Explainability & Serving
+- [x] Feature Importance Insights
 - [ ] Explainable AI (SHAP / LIME)
 - [ ] FastAPI inference service
-- [ ] Interactive Dashboard (Streamlit / Plotly Dash)
+- [x] Interactive Dashboard (Streamlit)
 
 ### Phase 3 — Spatial & Multimodal Intelligence
 - [ ] Geospatial Intelligence (location-aware pricing)
@@ -248,7 +269,7 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 <div align="center">
 
-[![GitHub](https://img.shields.io/badge/GitHub-YOUR_USERNAME-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/YOUR_USERNAME)
+[![GitHub](https://img.shields.io/badge/GitHub-sreeram0343-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/sreeram0343)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](#)
 [![Email](https://img.shields.io/badge/Email-Contact-D14836?style=for-the-badge&logo=gmail&logoColor=white)](#)
 
