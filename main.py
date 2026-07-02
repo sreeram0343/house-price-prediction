@@ -2,6 +2,11 @@ import os
 import json
 import numpy as np
 import pandas as pd
+import time
+import sys
+from datetime import datetime
+import sklearn
+import xgboost as xgb
 from src.preprocessing import preprocess_pipeline
 from src.train import train_and_tune_models, save_model_artifacts
 from src.evaluate import calculate_metrics, plot_and_save_results
@@ -14,6 +19,10 @@ def run_pipeline():
     scaler_path = 'models/scaler.pkl'
     features_path = 'models/features.json'
     metrics_path = 'models/metrics.json'
+    metadata_path = 'models/execution_metadata.json'
+    
+    start_time = time.time()
+    run_timestamp = datetime.now().isoformat()
     
     logger.info("==================================================")
     logger.info("  Starting House Price Prediction ML Pipeline     ")
@@ -80,10 +89,35 @@ def run_pipeline():
             "Best Parameters": str(data['params'])
         })
     cv_df = pd.DataFrame(cv_comparison)
-    # Output DataFrame lines using logging
     for line in cv_df.to_string(index=False).split('\n'):
         logger.info(line)
     logger.info("==================================================")
+    
+    # Save metadata JSON
+    execution_duration_sec = time.time() - start_time
+    metadata = {
+        "run_timestamp": run_timestamp,
+        "execution_duration_sec": round(execution_duration_sec, 2),
+        "python_version": sys.version,
+        "dependency_versions": {
+            "scikit-learn": sklearn.__version__,
+            "xgboost": xgb.__version__,
+            "pandas": pd.__version__,
+            "numpy": np.__version__
+        },
+        "output_artifacts": {
+            "model_path": model_path,
+            "scaler_path": scaler_path,
+            "features_path": features_path,
+            "metrics_path": metrics_path,
+            "metadata_path": metadata_path
+        },
+        "selected_model": best_model_name
+    }
+    with open(metadata_path, 'w') as f:
+        json.dump(metadata, f, indent=4)
+    logger.info(f"Execution metadata exported to {metadata_path}")
+    
     logger.info("  Pipeline Completed Successfully!                ")
     logger.info("==================================================")
 
