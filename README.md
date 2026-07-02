@@ -177,12 +177,35 @@ pip install -r requirements.txt
 
 ### Usage
 
+Run the default end-to-end pipeline:
 ```bash
-# Run the training & prediction pipeline
 python main.py
 ```
 
-> Adjust the command above to match the actual entry point of your project (e.g. a script in `src/` or a notebook in `notebooks/`).
+Configure parameters using CLI options:
+```bash
+python main.py --cv 3 --test-size 0.15 --random-state 101
+```
+
+**CLI Parameter Options:**
+* `--dataset`: Custom path to raw dataset CSV file (default: `data/House Price India.csv`).
+* `--test-size`: Proportion of test holdout split (default: `0.2`).
+* `--random-state`: Seed for partition split & algorithm randomization (default: `42`).
+* `--cv`: Number of cross-validation folds during hyperparameter tuning (default: `5`).
+* `--no-log-target`: Disable log-transformation on the target price variable.
+
+### 🧪 Running Unit Tests
+
+Run preprocessing feature-engineering unit tests:
+```bash
+python -m unittest discover -s tests
+```
+
+### 📋 Logging & Pipeline Metadata
+
+* **Logs**: All process activities (data loading, schema validations, CV tuning status, models saved) are formatted and stored in `logs/pipeline.log`.
+* **Execution Metadata**: Summary records of Python environments, dependency libraries, parameter configs, and final models are serialized to `models/execution_metadata.json` on each pipeline completion.
+
 
 ---
 
