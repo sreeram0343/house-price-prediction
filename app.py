@@ -244,7 +244,7 @@ if model is not None:
 
     # Tabs for additional information
     st.markdown('<div class="glass-card">', unsafe_allow_html=True)
-    tab1, tab2 = st.tabs(["📊 Analytics & Model Insights", "ℹ️ Engineering & Feature Information"])
+    tab1, tab2, tab3 = st.tabs(["📊 Analytics & Model Insights", "ℹ️ Engineering & Feature Information", "📈 Sensitivity Analysis"])
     
     with tab1:
         st.write("Below are the model diagnostics and feature importances extracted from the training runs:")
@@ -272,6 +272,66 @@ if model is not None:
         * **has_basement**: Binary flag checking if `Area of the basement > 0`.
         * **renovated_living_diff**: Captures changes in size between original living area and renovated living area.
         """)
+        
+    with tab3:
+        st.markdown("### What-If / Sensitivity Analysis")
+        st.write("Vary a selected input feature and see how the predicted price changes, holding all other inputs constant.")
+        
+        # We support numeric variables that are inputs
+        sensitivity_features = {
+            'Living Area (sqft)': ('living area', living_area, 200, 15000, 250),
+            'Lot Area (sqft)': ('lot area', lot_area, 200, 100000, 500),
+            'Bedrooms': ('number of bedrooms', bedrooms, 1, 33, 1),
+            'Bathrooms': ('number of bathrooms', bathrooms, 0.5, 8.0, 0.25),
+            'House Grade': ('grade of the house', grade, 1, 13, 1),
+            'House Condition': ('condition of the house', condition, 1, 5, 1)
+        }
+        
+        sel_feat_name = st.selectbox("Select Feature to Analyze", list(sensitivity_features.keys()))
+        col_db_name, current_val, min_val, max_val, step_val = sensitivity_features[sel_feat_name]
+        
+        # Generate grid of values
+        if col_db_name in ['living area', 'lot area']:
+            # Continuous grid (15 steps)
+            grid_values = np.linspace(max(min_val, current_val * 0.5), min(max_val, current_val * 1.5), 15)
+        else:
+            # Discrete grid
+            grid_values = np.arange(min_val, max_val + 1, step_val)
+            
+        # Ensure current value is in grid
+        if current_val not in grid_values:
+            grid_values = np.sort(np.append(grid_values, current_val))
+            
+        prices = []
+        for val in grid_values:
+            # Copy original raw_inputs
+            temp_inputs = raw_inputs.copy()
+            temp_inputs[col_db_name] = [val]
+            
+            # If living area is changed, we should adjust excl_basement and living_renov similarly if they match
+            if col_db_name == 'living area':
+                temp_inputs['Area of the house(excluding basement)'] = [max(200, val - basement_area)]
+                temp_inputs['living_area_renov'] = [val]
+                
+            temp_df = pd.DataFrame(temp_inputs)
+            temp_engineered = engineer_features(temp_df)
+            temp_engineered = temp_engineered[feature_names]
+            temp_scaled = scaler.transform(temp_engineered)
+            temp_pred = model.predict(temp_scaled)
+            temp_price = np.expm1(temp_pred)[0]
+            prices.append(temp_price)
+            
+        # Chart DataFrame representation
+        chart_df = pd.DataFrame({
+            sel_feat_name: grid_values,
+            'Predicted Price (INR)': prices
+        }).set_index(sel_feat_name)
+        
+        st.line_chart(chart_df)
+        
+        # Highlight current value impact
+        st.info(f"At current value of **{current_val}** for **{sel_feat_name}**, the predicted price is **₹{final_price:,.2f}**.")
+        
     st.markdown('</div>', unsafe_allow_html=True)
 else:
     st.warning("Please run `python main.py` first to train the model and serialize artifacts before running the dashboard.")
