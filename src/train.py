@@ -7,6 +7,7 @@ from sklearn.model_selection import GridSearchCV
 import xgboost as xgb
 import joblib
 import os
+from src.logger import logger
 
 def train_and_tune_models(X_train, y_train, cv=5):
     """
@@ -52,9 +53,9 @@ def train_and_tune_models(X_train, y_train, cv=5):
     best_model = None
     best_model_name = ""
     
-    print("\n--- Model Training & Tuning Started ---")
+    logger.info("--- Model Training & Tuning Started ---")
     for name, (model, param_grid) in models.items():
-        print(f"Tuning {name}...")
+        logger.info(f"Tuning {name}...")
         grid_search = GridSearchCV(
             estimator=model,
             param_grid=param_grid,
@@ -66,8 +67,8 @@ def train_and_tune_models(X_train, y_train, cv=5):
         grid_search.fit(X_train, y_train_flat)
         
         cv_score = grid_search.best_score_
-        print(f"  Best CV R2 Score: {cv_score:.4f}")
-        print(f"  Best Params: {grid_search.best_params_}")
+        logger.info(f"  Best CV R2 Score: {cv_score:.4f}")
+        logger.info(f"  Best Params: {grid_search.best_params_}")
         
         tuned_models[name] = {
             'model': grid_search.best_estimator_,
@@ -80,7 +81,7 @@ def train_and_tune_models(X_train, y_train, cv=5):
             best_model = grid_search.best_estimator_
             best_model_name = name
             
-    print(f"\nWinner: {best_model_name} with CV R2: {best_score:.4f}")
+    logger.info(f"Winner: {best_model_name} with CV R2: {best_score:.4f}")
     return best_model, best_model_name, tuned_models
 
 def save_model_artifacts(model, scaler, feature_names, model_path='models/best_model.pkl', scaler_path='models/scaler.pkl', features_path='models/features.json'):
@@ -89,14 +90,14 @@ def save_model_artifacts(model, scaler, feature_names, model_path='models/best_m
     
     # Save model
     joblib.dump(model, model_path)
-    print(f"Model saved to {model_path}")
+    logger.info(f"Model saved to {model_path}")
     
     # Save scaler
     joblib.dump(scaler, scaler_path)
-    print(f"Scaler saved to {scaler_path}")
+    logger.info(f"Scaler saved to {scaler_path}")
     
     # Save features list
     import json
     with open(features_path, 'w') as f:
         json.dump(feature_names, f)
-    print(f"Features list saved to {features_path}")
+    logger.info(f"Features list saved to {features_path}")

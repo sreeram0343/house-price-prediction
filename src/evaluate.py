@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import os
+from src.logger import logger
 
 def calculate_metrics(y_true, y_pred, is_log_scale=True):
     """
@@ -119,4 +120,4 @@ def plot_and_save_results(y_true, y_pred, model, feature_names, model_name, is_l
         plt.savefig(os.path.join(save_dir, 'feature_importance.png'), dpi=150)
         plt.close()
 
-    print(f"Evaluation plots saved to the folder '{save_dir}/'")
+    logger.info(f"Evaluation plots saved to the folder '{save_dir}/'")
