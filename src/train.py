@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.model_selection import GridSearchCV
 import xgboost as xgb
 import joblib
@@ -34,6 +34,14 @@ def train_and_tune_models(X_train, y_train, cv=5):
                 'n_estimators': [50, 100],
                 'max_depth': [10, 15],
                 'min_samples_split': [2, 5]
+            }
+        ),
+        'Gradient Boosting': (
+            GradientBoostingRegressor(random_state=42),
+            {
+                'n_estimators': [50, 100],
+                'max_depth': [3, 5],
+                'learning_rate': [0.05, 0.1]
             }
         ),
         'XGBoost': (
