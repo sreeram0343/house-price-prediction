@@ -3,12 +3,36 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 import os
+from src.logger import logger
 
 def load_data(filepath):
-    """Loads the dataset from the CSV file."""
+    """Loads the dataset from the CSV file and validates its schema."""
     if not os.path.exists(filepath):
+        logger.error(f"Dataset not found at {filepath}")
         raise FileNotFoundError(f"Dataset not found at {filepath}")
-    return pd.read_csv(filepath)
+        
+    logger.info(f"Loading dataset from {filepath}...")
+    df = pd.read_csv(filepath)
+    
+    required_columns = [
+        'number of bedrooms', 'number of bathrooms', 'living area', 'lot area',
+        'number of floors', 'waterfront present', 'number of views',
+        'condition of the house', 'grade of the house',
+        'Area of the house(excluding basement)', 'Area of the basement',
+        'Built Year', 'Renovation Year', 'Postal Code', 'Lattitude', 'Longitude',
+        'living_area_renov', 'lot_area_renov', 'Number of schools nearby',
+        'Distance from the airport', 'Price'
+    ]
+    
+    missing_cols = [col for col in required_columns if col not in df.columns]
+    if missing_cols:
+        error_msg = f"Dataset schema validation failed. Missing required columns: {missing_cols}"
+        logger.error(error_msg)
+        raise ValueError(error_msg)
+        
+    logger.info(f"Dataset schema validated successfully. Loaded {len(df)} rows.")
+    return df
+
 
 def engineer_features(df):
     """
