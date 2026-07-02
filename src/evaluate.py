@@ -121,3 +121,38 @@ def plot_and_save_results(y_true, y_pred, model, feature_names, model_name, is_l
         plt.close()
 
     logger.info(f"Evaluation plots saved to the folder '{save_dir}/'")
+
+def plot_correlation_matrix(X, feature_names, save_dir='plots'):
+    """Generates and saves a correlation heatmap for the features."""
+    os.makedirs(save_dir, exist_ok=True)
+    
+    if isinstance(X, pd.DataFrame):
+        df = X.copy()
+    else:
+        df = pd.DataFrame(X, columns=feature_names)
+        
+    plt.figure(figsize=(12, 10))
+    corr = df.corr()
+    
+    mask = np.triu(np.ones_like(corr, dtype=bool))
+    
+    sns.heatmap(
+        corr, 
+        mask=mask, 
+        cmap='coolwarm', 
+        vmax=1.0, 
+        vmin=-1.0, 
+        center=0,
+        square=True, 
+        linewidths=.5, 
+        cbar_kws={"shrink": .8},
+        annot=False
+    )
+    plt.title('Feature Correlation Matrix Heatmap', fontsize=14, fontweight='bold', pad=15)
+    plt.tight_layout()
+    
+    save_path = os.path.join(save_dir, 'correlation_matrix.png')
+    plt.savefig(save_path, dpi=150)
+    plt.close()
+    logger.info(f"Correlation heatmap saved to {save_path}")
+

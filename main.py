@@ -9,7 +9,7 @@ import sklearn
 import xgboost as xgb
 from src.preprocessing import preprocess_pipeline
 from src.train import train_and_tune_models, save_model_artifacts
-from src.evaluate import calculate_metrics, plot_and_save_results
+from src.evaluate import calculate_metrics, plot_and_save_results, plot_correlation_matrix
 from src.logger import logger
 
 def run_pipeline(dataset_path='data/House Price India.csv', test_size=0.2, random_state=42, cv=5, use_log_target=True):
@@ -75,6 +75,7 @@ def run_pipeline(dataset_path='data/House Price India.csv', test_size=0.2, rando
     plot_and_save_results(
         y_test, y_pred, best_model, feature_names, best_model_name, is_log_scale=use_log_target, save_dir='plots'
     )
+    plot_correlation_matrix(X_train, feature_names, save_dir='plots')
     
     # Output comparison table of CV scores
     logger.info("==================================================")
