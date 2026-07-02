@@ -12,9 +12,8 @@ from src.train import train_and_tune_models, save_model_artifacts
 from src.evaluate import calculate_metrics, plot_and_save_results
 from src.logger import logger
 
-def run_pipeline():
+def run_pipeline(dataset_path='data/House Price India.csv', test_size=0.2, random_state=42, cv=5, use_log_target=True):
     # Set paths
-    dataset_path = 'data/House Price India.csv'
     model_path = 'models/best_model.pkl'
     scaler_path = 'models/scaler.pkl'
     features_path = 'models/features.json'
@@ -31,7 +30,7 @@ def run_pipeline():
     # 1. Preprocessing & Data Scaling
     logger.info("[Step 1] Loading and preprocessing dataset...")
     X_train, X_test, y_train, y_test, feature_names, scaler = preprocess_pipeline(
-        dataset_path, test_size=0.2, random_state=42, use_log_target=True
+        dataset_path, test_size=test_size, random_state=random_state, use_log_target=use_log_target
     )
     logger.info(f"Dataset successfully split and scaled.")
     logger.info(f"  Training shape: {X_train.shape}")
@@ -40,7 +39,7 @@ def run_pipeline():
     
     # 2. Model Training and Comparison
     logger.info("[Step 2] Training and comparing regressors...")
-    best_model, best_model_name, tuned_results = train_and_tune_models(X_train, y_train, cv=5)
+    best_model, best_model_name, tuned_results = train_and_tune_models(X_train, y_train, cv=cv)
     
     # 3. Save Model Artifacts
     logger.info("[Step 3] Saving best model and scaler...")
@@ -52,7 +51,7 @@ def run_pipeline():
     y_pred = best_model.predict(X_test)
     
     # Compute metrics
-    metrics = calculate_metrics(y_test, y_pred, is_log_scale=True)
+    metrics = calculate_metrics(y_test, y_pred, is_log_scale=use_log_target)
     
     logger.info("--- Model Performance Summary (Original Price Scale) ---")
     logger.info(f"Selected Model: {best_model_name}")
@@ -74,7 +73,7 @@ def run_pipeline():
     # 5. Generate and Save Visualizations
     logger.info("[Step 5] Creating performance visualizations...")
     plot_and_save_results(
-        y_test, y_pred, best_model, feature_names, best_model_name, is_log_scale=True, save_dir='plots'
+        y_test, y_pred, best_model, feature_names, best_model_name, is_log_scale=use_log_target, save_dir='plots'
     )
     
     # Output comparison table of CV scores
@@ -99,6 +98,13 @@ def run_pipeline():
         "run_timestamp": run_timestamp,
         "execution_duration_sec": round(execution_duration_sec, 2),
         "python_version": sys.version,
+        "parameters": {
+            "dataset_path": dataset_path,
+            "test_size": test_size,
+            "random_state": random_state,
+            "cv": cv,
+            "use_log_target": use_log_target
+        },
         "dependency_versions": {
             "scikit-learn": sklearn.__version__,
             "xgboost": xgb.__version__,
@@ -122,4 +128,21 @@ def run_pipeline():
     logger.info("==================================================")
 
 if __name__ == '__main__':
-    run_pipeline()
+    import argparse
+    parser = argparse.ArgumentParser(description="House Price Prediction ML Pipeline Orchestrator")
+    parser.add_argument('--dataset', type=str, default='data/House Price India.csv', help='Path to raw dataset CSV')
+    parser.add_argument('--test-size', type=float, default=0.2, help='Test set proportion (0.0 to 1.0)')
+    parser.add_argument('--random-state', type=int, default=42, help='Random seed value')
+    parser.add_argument('--cv', type=int, default=5, help='Number of cross-validation folds')
+    parser.add_argument('--no-log-target', dest='use_log_target', action='store_false', help='Do not log-transform target variable')
+    parser.set_defaults(use_log_target=True)
+    
+    args = parser.parse_args()
+    
+    run_pipeline(
+        dataset_path=args.dataset,
+        test_size=args.test_size,
+        random_state=args.random_state,
+        cv=args.cv,
+        use_log_target=args.use_log_target
+    )
